@@ -5,16 +5,17 @@
 	/var 4gb ext4	
 	/swap 1gb -defecto
 	/bios-boot 2mb ext4
+
 4.- Configuramos el nombre del equipo
 5.- La contraseña del equipo
 6.- Instalamos
 7.- Ahora aseguraremos los archivos mediante fstab
 	- Ingresamos a tab nano /etc/fstab
-	- Copiaremos la primera ruta /dev/mapper/almalinux-root e ingresaremos el siguiente 	comando para encriptar el directorio blkid /dev/mapper/almalinux-root
+	- Copiaremos la primera ruta /dev/mapper/almalinux-root e ingresaremos el siguiente comando para encriptar el directorio blkid /dev/mapper/almalinux-root
 	- Ahora copiaremos el UUID y lo cambiaremos por la ruta del directorio
 	- Haremos los mismo para todos los otros directorios
 
-8.- Ahora pediremos cambio de contraseña iremos casi al final del archivo y pondremos lo siguiente
+8.- Ahora pediremos cambio de contraseña iremos casi al final del archivo nano /etc/login.defs y pondremos lo siguiente
 	PASS_MAX_DAYS   60
 	PASS_MIN_DAYS   0
 	PASS_WARN_AGE   7
@@ -106,7 +107,7 @@ SSH
 	-Pondremos lo siguiente para visualizar el ataque set VERBOSE true
 	-Pondremos exploit para empezar el ataque
 	-Pondremos sessions -l para ver las sesiones guardadas
-	-Ahora iniciaremos la sesion
+	-Ahora iniciaremos la sesion sessions -i 1
 HTTP
 	-Ahora para explotar el puerto HTTP 80 veremos que servidor esta usando con lo siguiente
 	nmap -sV 192.168.100.63 -p 80
@@ -115,6 +116,7 @@ HTTP
 	-use 0
 	- set RHOSTS 
 	- exploit
+	- shell
 	
 
 	
